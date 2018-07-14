@@ -23,6 +23,8 @@ Install agones
 Building
 ========
 
+Find and replace `YOUR_PROJECT_ID` in the Go and YAML files with your `gcr.io` repository project ID. I used the same project that my GKE cluster was created in to make accessing the image repository easy.
+
 `make bulid`
 
 Push Images
