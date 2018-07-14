@@ -3,19 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"agones.dev/agones/sdks/go"
-	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
+type State struct {
+	Counter int
 }
 
 func main() {
@@ -33,52 +30,26 @@ func main() {
 	stop := make(chan struct{})
 	go doHealth(s, stop)
 
+	state := &State{Counter: 0}
+
+	hub := newHub()
+	go hub.run()
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		indexFile, err := os.Open("/home/server/site/index.html")
-		if err != nil {
-			fmt.Println(err)
+		log.Println(r.URL)
+		if r.URL.Path != "/" {
+			http.Error(w, "Not found", http.StatusNotFound)
+			return
 		}
-		index, err := ioutil.ReadAll(indexFile)
-		if err != nil {
-			fmt.Println(err)
+		if r.Method != "GET" {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
 		}
-		fmt.Fprintf(w, string(index))
+		http.ServeFile(w, r, "/home/server/site/index.html")
 	})
 
 	http.HandleFunc("/websocket", func(w http.ResponseWriter, r *http.Request) {
-		conn, err := upgrader.Upgrade(w, r, nil)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		counter := 1
-		for {
-			msgType, msg, err := conn.ReadMessage()
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			if string(msg) == "PING" {
-				fmt.Println(fmt.Sprintf("ping %d", counter))
-				err = conn.WriteMessage(msgType, []byte(fmt.Sprintf("pong %d", counter)))
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-				counter = counter + 1
-			}
-			if string(msg) == "STOP" {
-				err := s.Shutdown()
-				if err != nil {
-					log.Printf("Error shutting down: %v", err)
-				}
-				conn.Close()
-				close(stop)
-				os.Exit(0)
-				fmt.Println(string(msg))
-				return
-			}
-		}
+		serveWebsocket(state, s, hub, w, r)
 	})
 
 	err = s.Ready()
