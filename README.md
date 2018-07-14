@@ -34,9 +34,13 @@ Deploying
 =========
 
 `kubectl apply -f yaml/launcher`
+
 `kubectl get -n simple-launcher service`
 
+Testing
+=======
 Now visit the simple-launcher service. You should see a link to create a new gameserver. After clicking the link, a new gameserver will be created.
+
 The details for the gameserver will load and you will get another link to access the new gameserver instance.
 
 The gameserver instance is a VueJs/WebSocket single page that has a Ping/Pong app that talks to the gameserver. It also has a button for stoppind the gameserver.
