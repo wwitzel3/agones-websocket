@@ -1,4 +1,8 @@
-This is for exploring uses of Agones. This example is a simple Ping/Pong websocket example.
+This is for exploring GoogleCloudPlatform agones.
+
+More info at https://github.com/GoogleCloudPlatform/agones.
+
+This example is a simple Ping/Pong websocket example.
 The websocket could be used to stream game data to a JS game client.
 
 GKE
