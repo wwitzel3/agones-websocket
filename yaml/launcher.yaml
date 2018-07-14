@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app: launcher
+  name: simple-launcher
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  generation: 1
+  labels:
+    run: simple-launcher
+  name: simple-launcher
+  namespace: simple-launcher
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      run: simple-launcher
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: simple-launcher
+    spec:
+      containers:
+      - image: gcr.io/YOUR_PROJECT_ID/simple-launcher:latest
+        imagePullPolicy: Always
+        name: simple-launcher
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: simple-launcher
+  name: simple-launcher
+  namespace: simple-launcher 
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - port: 8001
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: simple-launcher
+  sessionAffinity: None
+  type: LoadBalancer 
+status:
+  loadBalancer: {}

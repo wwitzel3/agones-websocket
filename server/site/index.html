@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Game Server</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    {{ message }}
+    <br/>
+    <button v-on:click="pingServer">Ping Server</button>
+    <button v-on:click="stopServer">Stop Server</button>
+  </div>
+
+  <script>
+	var windowLocation = window.location, wsuri
+	if (windowLocation.protocol === "https:") {
+		wsuri = "wss:"
+	} else {
+		wsuri = "ws:"
+	}
+
+	wsuri += "//" + windowLocation.host
+	wsuri += windowLocation.pathname + "websocket"
+
+    const ws = new WebSocket(wsuri)
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        message: ''
+      },
+      methods: {
+        stopServer: function() {
+          ws.send('STOP')
+          this.message = 'server stopped'
+        },
+        pingServer: function() {
+          ws.send('PING')
+        }
+      }
+    });
+
+    ws.onmessage = function(e) {
+      var local = app
+      local.message = e.data
+    }
+
+  </script>
+</body>
+</html>
