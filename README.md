@@ -7,10 +7,11 @@ The websocket could be used to stream game data to a JS game client.
 
 GKE
 ===
+Start a new cluster. I just use the defaults. Run the `gcloud` command to add the cluster to your kubeconfig.
 
 ```
 kubectl create clusterrolebinding cluster-admin-binding \
-  --clusterrole cluster-admin --user `gcloud config get-value account
+  --clusterrole cluster-admin --user `gcloud config get-value account`
 ```
 
 ```
@@ -29,12 +30,14 @@ Building
 
 Find and replace `YOUR_PROJECT_ID` in the Go and YAML files with your `gcr.io` repository project ID. I used the same project that my GKE cluster was created in to make accessing the image repository easy.
 
+`sed -i 's/YOUR_PROJECT_ID/example-123456/g' *`
 `make bulid`
+`make build-image`
 
 Push Images
 ===========
 
-`make push`
+`make push-image`
 
 Deploying
 =========
