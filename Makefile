@@ -13,11 +13,11 @@ push-image: push-server push-launcher
 
 # Build the launcher 
 build-launcher:
-	CGO_ENABLED=0 go build -o $(project_path)/launcher/bin/launcher -a -installsuffix cgo $(package)/launcher
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(project_path)/launcher/bin/launcher -a -installsuffix cgo $(package)/launcher
 
 # Build the server
 build-server:
-	CGO_ENABLED=0 go build -o $(project_path)/server/bin/server -a -installsuffix cgo $(package)/server
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(project_path)/server/bin/server -a -installsuffix cgo $(package)/server
 
 # Build a docker image for the server, and tag it
 build-server-image:
