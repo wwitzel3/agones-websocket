@@ -19,7 +19,7 @@ kubectl create clusterrolebinding cluster-admin-binding \
 ```
  gcloud compute firewall-rules create game-server-firewall \
   --allow tcp:7000-8000 \
-  --description "Firewall to allow game server udp traffic"
+  --description "agones-simple example firewall to allow game server tcp traffic"
 ```
 
 Install agones
