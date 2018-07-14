@@ -4,7 +4,7 @@ mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 project_path := $(dir $(mkfile_path))
 server_tag = $(REPOSITORY)/simple-ws
 launcher_tag = $(REPOSITORY)/simple-launcher
-package = github.com/wwitzel3/agones-simple
+package = github.com/wwitzel3/agones-websocket
 
 # build both launcher and server
 build: build-launcher build-server

@@ -70,12 +70,13 @@ func (c *Client) readPump() {
 			message = []byte(fmt.Sprintf("PONG %d", c.state.Counter))
 		}
 		if string(message) == "STOP" {
-			log.Println("shutting down")
 			message = []byte("shutting down")
+			message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+			c.hub.broadcast <- message
+
 			c.sdk.Shutdown()
-			log.Fatalf("shutting down")
+			log.Println("shutting down")
 			os.Exit(0)
-			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
 		c.hub.broadcast <- message
