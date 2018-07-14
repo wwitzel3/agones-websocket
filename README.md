@@ -1,4 +1,4 @@
-![alt text](https://raw.githubusercontent.com/wwitzel3/agones-simple/agones-simple.gif)
+![agones-simple-demo](agones-simple.gif)
 
 This is for exploring GoogleCloudPlatform agones.
 
