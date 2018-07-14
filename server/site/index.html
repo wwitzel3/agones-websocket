@@ -33,7 +33,6 @@
       methods: {
         stopServer: function() {
           ws.send('STOP')
-          this.message = 'server stopped'
         },
         pingServer: function() {
           ws.send('PING')

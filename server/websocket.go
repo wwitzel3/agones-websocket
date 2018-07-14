@@ -62,11 +62,15 @@ func (c *Client) readPump() {
 			}
 			break
 		}
+
+		log.Printf("message: %s", string(message))
+
 		if string(message) == "PING" {
 			c.state.Counter = c.state.Counter + 1
 			message = []byte(fmt.Sprintf("PONG %d", c.state.Counter))
 		}
 		if string(message) == "STOP" {
+			log.Println("shutting down")
 			message = []byte("shutting down")
 			c.sdk.Shutdown()
 			log.Fatalf("shutting down")
@@ -125,13 +129,15 @@ func (c *Client) writePump() {
 }
 
 func serveWebsocket(state *State, sdk *sdk.SDK, hub *Hub, w http.ResponseWriter, r *http.Request) {
+	log.Println("new ws:// connection")
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
+	client := &Client{state: state, sdk: sdk, hub: hub, conn: conn, send: make(chan []byte, 256)}
 	client.hub.register <- client
+	client.send <- []byte(fmt.Sprintf("PONG %d", state.Counter))
 
 	// Allow collection of memory referenced by the caller by doing all work in
 	// new goroutines.
