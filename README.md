@@ -40,7 +40,7 @@ Find and replace `YOUR_PROJECT_ID` in the Go and YAML files with your `gcr.io` r
 
 `sed -i 's/YOUR_PROJECT_ID/example-123456/g' *`
 
-`make bulid`
+`make build`
 
 `make build-image`
 
@@ -52,7 +52,7 @@ Push Images
 Deploying
 =========
 
-`kubectl apply -f yaml/launcher`
+`kubectl apply -f yaml/launcher.yaml`
 
 `kubectl get -n simple-launcher service`
 
